@@ -2,7 +2,7 @@ import random
 import string
 
 
-INTRO_GRAPHICS = """
+INTRO_GRAPHICS = r"""
 .-. .-')    ('-.          .-')     ('-.                  ('-.  ,---. 
 \  ( OO ) _(  OO)        ( OO ).  ( OO ).-.            _(  OO) |   | 
  ;-----.\(,------.      (_)---\_) / . --. /   ,------.(,------.|   | 
