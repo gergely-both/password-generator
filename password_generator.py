@@ -1,22 +1,8 @@
 import random
 import string
 
-CHARS = string.ascii_letters + string.digits
-SYMBOLS = """!"#$%&'()*+,-./:;<=>?@[\]^_{}~"""
-MIN_CHARS = 5
-MAX_CHARS = 128
 
-
-def generate_password():
-    password_chars = random.choices(CHARS, k=total_count-sym_count)
-    password_syms = random.choices(SYMBOLS, k=sym_count)
-    password_elements = password_chars + password_syms
-    random.shuffle(password_elements)
-    password = "".join(password_elements)
-    print(f"\n\n\tYour generated password is: {password}")
-
-
-print("""
+INTRO_GRAPHICS = """
 .-. .-')    ('-.          .-')     ('-.                  ('-.  ,---. 
 \  ( OO ) _(  OO)        ( OO ).  ( OO ).-.            _(  OO) |   | 
  ;-----.\(,------.      (_)---\_) / . --. /   ,------.(,------.|   | 
@@ -28,37 +14,73 @@ print("""
  `------' `------'       `-----'  `--' `--'   `--'     `------''--'  
 
 Welcome to the password generator!
-""")
+"""
+
+
+print(INTRO_GRAPHICS)
+app_running = True
+
+
+ALNUMS = "".join(item_1 for item_1 in string.printable if item_1.isalnum())
+SYMBOLS = "".join(
+    item_2
+    for item_2 in string.printable
+    if (not item_2.isalnum() and not item_2 in string.whitespace)
+)
+MIN_CHARS, MAX_CHARS = 5, 128
+
+
+def password_generate():
+    password_alnums = random.choices(ALNUMS, k=total_count - symbols_count)
+    password_symbols = random.choices(SYMBOLS, k=symbols_count)
+    password_elements = password_alnums + password_symbols
+    random.shuffle(password_elements)
+    password = "".join(password_elements)
+    print(f"\n\tYour generated password is:\n\t{password}")
+
 
 total_count = None
-sym_count = None
-while not isinstance(total_count, int) or not isinstance(sym_count, int):
+symbols_count = None
+while not (isinstance(total_count, int) and isinstance(symbols_count, int)):
     try:
         if not isinstance(total_count, int):
-            answer_total = int(input("\nEnter character count of password: "))
-            total_count = answer_total if MIN_CHARS <= answer_total <= MAX_CHARS else None
-            if 0 < answer_total < MIN_CHARS:
-                print("\tThat value is too low.")
-            elif answer_total > MAX_CHARS:
-                print("\tThat value is too high.")
-            elif answer_total <= 0:
-                raise ValueError()
-        elif not isinstance(sym_count, int):
-            answer_sym = int(input("\nHow many special characters should be present? "))
-            sym_count = answer_sym if 0 <= answer_sym <= total_count else None
-            if answer_sym > total_count:
-                print("\tThat value is too high.")
-            elif answer_sym < 0:
-                raise ValueError()
+            totcount_reply = int(input("\nEnter length of password: "))
+            total_count = (
+                totcount_reply if MIN_CHARS <= totcount_reply <= MAX_CHARS else None
+            )
+            # user choice failure explanation for total_count
+            if total_count is None:
+                if 0 < totcount_reply < MIN_CHARS:
+                    print("\tThat value is too low.")
+                elif totcount_reply > MAX_CHARS:
+                    print("\tThat value is too high.")
+                elif totcount_reply <= 0:
+                    raise ValueError()
+
+        elif not isinstance(symbols_count, int):
+            symcount_reply = int(
+                input("\nHow many special characters should be present? ")
+            )
+            symbols_count = (
+                symcount_reply if 0 <= symcount_reply <= total_count else None
+            )
+            # user choice failure explanation for symbols_count:
+            if symbols_count is None:
+                if symcount_reply < 0:
+                    raise ValueError()
+                elif symcount_reply > total_count:
+                    print("\tThat value is too high.")
     except ValueError:
         print("\tThat is an invalid value.")
 
-generate_password()
 
-while True:
-    repeat = input("\n\t\tTry again? ([Y]/n): ").lower()
-    if repeat == "n":
-        print("\n\nHave a great day! 😊\n\n")
+password_generate()
+
+
+while app_running:
+    repeat_reply = input("\nTry another? ([Y]/n): ").strip().lower()
+    if repeat_reply in {"y", ""}:
+        password_generate()
+    elif repeat_reply == "n":
+        print("\nHave a nice day! 😊\n")
         break
-    elif repeat.strip() in {"", "y"}:
-        generate_password()
